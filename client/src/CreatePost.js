@@ -1,68 +1,73 @@
-import { Button, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Form, Button } from "react-bootstrap";
+import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function CreatePost() {
-    const navigate = useNavigate();
-    const [post, setPost] = useState({
-        title: "",
-        description: ""
+  const navigate = useNavigate();
+  const [post, setPost] = useState({
+    title: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPost((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
     });
-    const handlechange = (event) => {
-        const { name, value } = event.target;
-        setPost(Prev => {
-            return ({
-                ...Prev,
-                [name]: value,
+  };
 
-            })
-        })
-    }
-    useEffect(() => {
-        console.log(post);
-    }, [post]);
+  const createPost = (e) => {
+    e.preventDefault();
 
-    const handleClick = (event) => {
-        event.preventDefault();
-        axios
-        .post("/create")
-        .then(res => console.log(Error))
-        .catch((err) => console.log(Error)) ;
-    }
+    axios
+      .post("/create", post)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
 
-    return (
-        <div style={{ width: "90%", margin: "auto auto", textAlign: "center" }}>
-            <h1>Create a Post</h1>
-            <Form>
-                <Form.Group>
-                    <Form.Control
-                        name="title"
-                        value={post.title}
-                        placeholder="title"
-                        style={{ marginBottom: "1rem" }}
-                        onChange={handlechange}
-                    />
-                    <Form.Control
-                        name="description"
-                        value={post.description}
-                        placeholder="description"
-                        style={{ marginBottom: "1rem" }}
-                        onChange={handlechange}
-                    />
-                </Form.Group>
-                <Button
-                    style={{ width: "100%", marginButtom: "1rem" }}
-                    variant="outline-success"
-                    onClick={handleClick}>CREATE POST
-                </Button>
-            </Form>
-            <Button
-                style={{ width: "100%" }}
-                variant="outline-dark"
-                onClick={() => navigate(-1)}>BACK</Button>
-        </div>
-    );
+    navigate("posts");
+  };
+
+  return (
+    <div style={{ textAlign: "center", width: "90%", margin: "auto auto" }}>
+      <h1>Create post page</h1>
+      <Form>
+        <Form.Group>
+          <Form.Control
+            name="title"
+            value={post.title}
+            onChange={handleChange}
+            style={{ marginBottom: "1rem" }}
+            placeholder="title"
+          />
+          <Form.Control
+            onChange={handleChange}
+            name="description"
+            value={post.description}
+            style={{ marginBottom: "1rem" }}
+            placeholder="description"
+          />
+        </Form.Group>
+        <Button
+          onClick={createPost}
+          variant="outline-success"
+          style={{ width: "100%", marginBottom: "1rem" }}
+        >
+          CREATE POST
+        </Button>
+      </Form>
+      <Button
+        onClick={() => navigate("posts")}
+        variant="outline-success"
+        style={{ width: "100%" }}
+      >
+        ALL POSTS
+      </Button>
+    </div>
+  );
 }
 
 export default CreatePost;
